@@ -70,7 +70,6 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         }
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
-        //this.addKeyListener(this);
         frame.addKeyListener(this);
         frame.setDefaultCloseOperation(3);
         frame.add(this);
@@ -159,7 +158,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         graphics.drawString("⇄", 95, 547);
     }
 
-    private void paintSkipTurnButton(final Graphics graphics){
+    private void paintSkipTurnButton(final Graphics graphics) {
         graphics.setColor(WHITE);
         graphics.fillOval(33, 530, 20, 20);
         graphics.setFont(new Font("TimesRoman", Font.PLAIN, 18));
@@ -167,61 +166,63 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         graphics.drawString("S", 35, 547);
     }
 
-    private void paintTilesOnBoard(final Graphics graphics){
+    private void paintTilesOnBoard(final Graphics graphics) {
         for (int i = 0; i < grid.length; i++) {
-         for (int j = 0; j < grid[i].length; j++) {
-            if(onBoard[i][j] != null){
-            
-            Tile t = onBoard[i][j];
-            graphics.setFont(new Font("MonoLisa", Font.PLAIN, 27));
-            int adjust = 0;
-            
-            if (t.getLetter().equals("W")) {
-                adjust = 2;
-            } else if (t.getLetter().equals("M")) {
-                adjust = 3;
-            } else if (t.getLetter().equals("D") || t.getLetter().equals("G")) {
-                adjust = 4;
-            } else if (t.getLetter().equals("Q") || t.getLetter().equals("E") || t.getLetter().equals("R")
-                    || t.getLetter().equals("O")
-                    || t.getLetter().equals("C")) {
-                adjust = 5;
-            } else if (t.getLetter().equals("U") || t.getLetter().equals("H") || t.getLetter().equals("K")
-                    || t.getLetter().equals("V")
-                    || t.getLetter().equals("B") || t.getLetter().equals("N")) {
-                adjust = 6;
-            } else if (t.getLetter().equals("Y") || t.getLetter().equals("X") || t.getLetter().equals("?")
-                    || t.getLetter().equals("Z")
-                    || t.getLetter().equals("P") || t.getLetter().equals("A") || t.getLetter().equals("S")
-                    || t.getLetter().equals("F")
-                    || t.getLetter().equals("L")) {
-                adjust = 7;
-            } else if (t.getLetter().equals("T")) {
-                adjust = 8;
-            } else if (t.getLetter().equals("J")) {
-                adjust = 9;
-            } else if (t.getLetter().equals("I")) {
-                adjust = 12;
+            for (int j = 0; j < grid[i].length; j++) {
+                if (onBoard[i][j] != null) {
+
+                    Tile t = onBoard[i][j];
+                    graphics.setFont(new Font("MonoLisa", Font.PLAIN, 27));
+                    int adjust = 0;
+
+                    if (t.getLetter().equals("W")) {
+                        adjust = 2;
+                    } else if (t.getLetter().equals("M")) {
+                        adjust = 3;
+                    } else if (t.getLetter().equals("D") || t.getLetter().equals("G")) {
+                        adjust = 4;
+                    } else if (t.getLetter().equals("Q") || t.getLetter().equals("E") || t.getLetter().equals("R")
+                            || t.getLetter().equals("O")
+                            || t.getLetter().equals("C")) {
+                        adjust = 5;
+                    } else if (t.getLetter().equals("U") || t.getLetter().equals("H") || t.getLetter().equals("K")
+                            || t.getLetter().equals("V")
+                            || t.getLetter().equals("B") || t.getLetter().equals("N")) {
+                        adjust = 6;
+                    } else if (t.getLetter().equals("Y") || t.getLetter().equals("X") || t.getLetter().equals("?")
+                            || t.getLetter().equals("Z")
+                            || t.getLetter().equals("P") || t.getLetter().equals("A") || t.getLetter().equals("S")
+                            || t.getLetter().equals("F")
+                            || t.getLetter().equals("L")) {
+                        adjust = 7;
+                    } else if (t.getLetter().equals("T")) {
+                        adjust = 8;
+                    } else if (t.getLetter().equals("J")) {
+                        adjust = 9;
+                    } else if (t.getLetter().equals("I")) {
+                        adjust = 12;
+                    }
+                    graphics.setColor(BLACK);
+                    graphics.drawRect(t.getRow(), t.getCol(), 30, 30);
+                    graphics.setColor(TILE_COLOR);
+                    graphics.fillRect(t.getRow(), t.getCol(), 30, 30);
+                    graphics.setColor(BLACK);
+                    graphics.drawString(t.getLetter(), t.getRow() + adjust, t.getCol() + 24);
+                    graphics.setFont(new Font("MonoLisa", Font.PLAIN, 10));
+                    if (!t.getLetter().equals("?")) {
+                        graphics.drawString(Integer.toString(t.getValue()), t.getRow(), t.getCol() + 29);
+                    }
+                }
             }
-            graphics.setColor(BLACK);           
-            graphics.drawRect(t.getRow(), t.getCol(), 30, 30);
-            graphics.setColor(TILE_COLOR);
-            graphics.fillRect(t.getRow(), t.getCol(), 30, 30);
-            graphics.setColor(BLACK);
-            graphics.drawString(t.getLetter(), t.getRow() + adjust, t.getCol() + 24);
-            graphics.setFont(new Font("MonoLisa", Font.PLAIN, 10));
-            if (!t.getLetter().equals("?")) {
-                graphics.drawString(Integer.toString(t.getValue()), t.getRow(), t.getCol() + 29);
-            }  
-        }      }  
-        }    
+        }
     }
+
     @Override
     public void paintComponent(final Graphics graphics) {
         graphics.clearRect(0, 0, this.getWidth(), this.getHeight());
         this.paintText(graphics);
         this.paintGrid(graphics);
-        currentPlayer().draw(graphics);        
+        currentPlayer().draw(graphics);
         this.paintTilesOnBoard(graphics);
         this.paintRecallButton(graphics);
         this.paintShuffleHandButton(graphics);
@@ -336,7 +337,8 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
                 if (currentPlayer().getHand()[i].getCol() < 50 || currentPlayer().getHand()[i].getCol() > 50 + 30 * 15
                         || currentPlayer().getHand()[i].getRow() < 30
                         || currentPlayer().getHand()[i].getRow() > 30 + 30 * 15) {
-                    currentPlayer().getHand()[i].changingCords(currentPlayer().getHand()[i].getHandY(), currentPlayer().getHand()[i].getHandX(), false);
+                    currentPlayer().getHand()[i].changingCords(currentPlayer().getHand()[i].getHandY(),
+                            currentPlayer().getHand()[i].getHandX(), false);
                 } else {
                     currentPlayer().getHand()[i].changingCords(n2, n, true);
                 }
@@ -353,13 +355,14 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
 
     public void keyTyped(KeyEvent ke) {
     }
-    
+
     @Override
     public void keyPressed(KeyEvent ke) {
         int clicked = ke.getKeyCode();
         if(clicked == KeyEvent.VK_ENTER){
         //checks if word is valid 
         if(currentPlayer().wordValid(onBoard)){
+            
             int keep = currentPlayer().onBoardNumber();
             Tile[] hold = new Tile[keep];
             hold = currentPlayer().placedTiles();
@@ -372,22 +375,19 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
             user2.switchTurn();
         }else {
         System.out.println("word isn't valid");
-   }
-        
-       
+     
     }
+}
     repaint();
     }
- 
-    
+
     public void keyReleased(KeyEvent ke) {
     }
- 
-    
+
     public void actionPerformed(ActionEvent ae) {
         repaint();
     }
-    
+
     static {
         // basic board
         GRID_COLOR_A = new Color(210, 180, 140);
@@ -413,5 +413,5 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         LIGHTBLUE = new Color(173, 216, 230);
 
     }
-   
+
 }

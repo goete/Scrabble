@@ -88,12 +88,13 @@ public class Player {
 
             }
         }
+        //checks for overlaying tiles
         int count = 0;
         for (int i = 0; i < numOfTilesInHand; i++) {
             if (hand[i].placedOnBoard()) {
                 store[count] = hand[i];
                 count++;
-                if (hold[hand[i].boardX()][hand[i].boardY()] == 0) {//no tile at placement
+                if (hold[hand[i].boardX()][hand[i].boardY()] == 0) {//placement spot is open
                     hold[hand[i].boardX()][hand[i].boardY()] = hand[i].getLetter().charAt(0);
                 } else { // tile is over another tile, can't do that
                     System.out.println("A tile is over another tile, can't do that");
@@ -113,16 +114,18 @@ public class Player {
                         collect[z] = hold[i][j + z];
                         z++;
                     }
-                    
-                    String word = new String(collect);
+                    if(z>1){
+                    String word = "";
+                    for (int k = 0; k < z; k++) {
+                        word = word + collect[k];
+                    }                    
                     if (this.dict.validWord(word) == false) { // the word isnt a word
-                        System.out.println(dict.validWord(word));
                         return false;
                     }
+                }
                     // go to the end of the word since it has been checked
                     j = j + z - 1;
                 }
-
             }
         }
         // down \/
@@ -131,26 +134,28 @@ public class Player {
                 char[] collect = new char[15];
                 int z = 0;
                 if (hold[j][i] != 0) {
-                    collect[z] = hold[i][j];
+                    collect[z] = hold[j][i];
                     z++;
                     while (hold[j+z][i] != 0 && j + z < hold.length) {
                         collect[z] = hold[j + z][i];
                         z++;
                     }
-                    String word = new String(collect);
+                    if(z>1){
+                    String word = "";
+                    for (int k = 0; k < z; k++) {
+                        word = word + collect[k];
+                    }
                     if (this.dict.validWord(word) == false) { // the word isnt a word
-
-                        System.out.println(dict.validWord(word));
+                        System.out.println("Down fail");
                         return false;
                     }
-                    // go to the end of the word since it has been checked
-                    i = i + z - 1;
                 }
-
+                    // go to the end of the word since it has been checked
+                    j = j + z - 1;
+                }
             }
         }
         // everything is a word
-
         return true;
 
     }
