@@ -217,10 +217,20 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         }
     }
 
-    
+    private void printScores(final Graphics graphics){
+        graphics.setColor(GRID_COLOR_E);
+        graphics.fillRect(30, 10, 205, 30);
+        graphics.fillRect(275, 10, 205, 30);
+        graphics.setColor(BLACK);
+        graphics.setFont(new Font("MonoLisa", Font.PLAIN, 27));
+        graphics.drawString("Player One: " + user1.getScore(), 33, 35);
+        graphics.drawString("Player Two: " + user2.getScore(), 278, 35);
+
+    }
     @Override
     public void paintComponent(final Graphics graphics) {
         graphics.clearRect(0, 0, this.getWidth(), this.getHeight());
+        this.printScores(graphics);
         this.paintText(graphics);
         this.paintGrid(graphics);
         currentPlayer().draw(graphics);
