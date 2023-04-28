@@ -80,18 +80,6 @@ public class Tile implements Comparable<Tile>{
         return placedOnBoard;
     }
 
-    public boolean fakePlaced(){
-        return fakePlaced;
-    }
-
-    public void trueFakePlaced(){
-        fakePlaced = true;
-    }
-
-    public void falseFakePlaced(){
-        fakePlaced = false;
-    }
-
     public String toString() {
         String name = "";
         name = name + this.letter + this.value;
@@ -113,10 +101,10 @@ public class Tile implements Comparable<Tile>{
         this.row = y;
         this.placedOnBoard = false;
     }else{
+        //sets it so the corner is in the corner of the square
         this.col = 50 + 30*((x-50)/30);
         this.row = 30 + 30*((y-30)/30);
         this.placedOnBoard = true;
-
     }
     }
 
@@ -143,21 +131,14 @@ public class Tile implements Comparable<Tile>{
     public void clickedOff(){
         currentlyClicked = false;
     }
-
+    
     //getting placement on the board
     public int boardX(){
-        return (this.col-30)/30;
+        return (this.col-50)/30;
     }
 
     public int boardY(){
-        return (this.row-50)/30;
-    }
-
-    public int[] cord(){
-        int[] xy = new int[2];
-        xy[0] = this.boardX();
-        xy[1] = this.boardY();
-        return xy;
+        return (this.row-30)/30;
     }
 
     @Override

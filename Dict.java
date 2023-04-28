@@ -31,6 +31,7 @@ public class Dict {
 
     public boolean validWord(String w) {
         w = w.toUpperCase();
+        System.out.println(w);
         for (int j = 0; j < dictionary.length; j++) {
         if (w.equals(dictionary[j])) { 
             return true;

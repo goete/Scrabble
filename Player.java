@@ -48,7 +48,7 @@ public class Player {
             hand[i].setHandY(this.returnToHandY);
             hand[i].changingCords(hand[i].getHandY(), hand[i].getHandX(), false);
             returnToHandX = hand[i].getCol();
-            hand[i].falseFakePlaced();
+           // hand[i].falseFakePlaced();
         }
     }
 
@@ -74,88 +74,191 @@ public class Player {
         return num;
     }
 
-    public boolean wordValid(Tile[][] board) {
-        // make another array for storage
-        Tile[] store = new Tile[onBoardNumber()];
-        // remake the board array as a char
-        char[][] hold = new char[15][15];
-        // set up the checking board
-        for (int i = 0; i < hold.length; i++) {
-            for (int j = 0; j < hold[i].length; j++) {
-                if (board[i][j] != null) {
-                    hold[i][j] = board[i][j].getLetter().charAt(0);
+    private boolean touchingAndSameRow(Tile[][] board) {
+        if (boardEmpty(board)) {
+            boolean hold = false;
+            for (int i = 0; i < hand.length; i++) {
+                System.out.println(hand[i].boardX() + " " + hand[i].boardY());
+                if (hand[i].boardX() == 7 && hand[i].boardY() == 7) {
+                    hold = true;
                 }
-
+            }
+            if (!hold) {
+                System.out.println("First play must be on the middle star");
+                return false;
             }
         }
-        //checks for overlaying tiles
-        int count = 0;
-        for (int i = 0; i < numOfTilesInHand; i++) {
+        for (int i = 0; i < hand.length; i++) {
+            for (int j = 0; j < hand.length; j++) {
+                if (hand[i].placedOnBoard() && hand[j].placedOnBoard()) { // both are on board
+                    if (hand[i].boardX() == hand[j].boardX() || hand[i].boardY() == hand[j].boardY()) {
+                        // this is good, leave blank
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if (!touchingPreviousPlays(board)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean touchingPreviousPlays(Tile[][] board) {
+        if(boardEmpty(board)){
+            return true;
+        }else{
+        for (int i = 0; i < hand.length; i++) {
             if (hand[i].placedOnBoard()) {
-                store[count] = hand[i];
-                count++;
-                if (hold[hand[i].boardX()][hand[i].boardY()] == 0) {//placement spot is open
-                    hold[hand[i].boardX()][hand[i].boardY()] = hand[i].getLetter().charAt(0);
-                } else { // tile is over another tile, can't do that
-                    System.out.println("A tile is over another tile, can't do that");
+                if(hand[i].boardX() - 1 >= 0){
+                    if(board[hand[i].boardX() - 1][hand[i].boardY()] != null){
+                        return true;
+                    }
+                }
+                if(hand[i].boardX() + 1 <= 14){
+                    if(board[hand[i].boardX() + 1][hand[i].boardY()] != null){
+                        return true;
+                    }
+                }
+                if (hand[i].boardY() - 1 >= 0){
+                    if(board[hand[i].boardX()][hand[i].boardY() - 1] != null){
+                        return true;
+                    }
+                }
+                if(hand[i].boardY() + 1 <= 14){
+                    if(board[hand[i].boardX()][hand[i].boardY() + 1] != null){
+                        return true;
+                    }
+                }
+                
+                
+            }
+        }
+    }
+        return false;
+    }
+
+    private boolean boardEmpty(Tile[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                if (board[i][j] != null) { // there's something there
                     return false;
                 }
             }
         }
-        // ->
-        for (int i = 0; i < hold.length; i++) {
-            for (int j = 0; j < hold[i].length; j++) {
-                char[] collect = new char[15];
-                int z = 0;
-                if (hold[i][j] != 0) {
-                    collect[z] = hold[i][j];
-                    z++;
-                    while (hold[i][j + z] != 0 && i + z < hold.length) {
-                        collect[z] = hold[i][j + z];
-                        z++;
+        return true;
+    }
+
+    public boolean wordValid(Tile[][] board) {
+        // check that each letter is forming the same word
+        if (touchingAndSameRow(board)) {
+            // make another array for storage
+            Tile[] store = new Tile[onBoardNumber()];
+            // remake the board array as a char
+            char[][] hold = new char[15][15];
+            // set up the checking board
+            for (int i = 0; i < hold.length; i++) {
+                for (int j = 0; j < hold[i].length; j++) {
+                    if (board[i][j] != null) {
+                        hold[i][j] = board[i][j].getLetter().charAt(0);
                     }
-                    if(z>1){
-                    String word = "";
-                    for (int k = 0; k < z; k++) {
-                        word = word + collect[k];
-                    }                    
-                    if (this.dict.validWord(word) == false) { // the word isnt a word
+
+                }
+            }
+            // checks for overlaying tiles
+            int count = 0;
+            for (int i = 0; i < numOfTilesInHand; i++) {
+                if (hand[i].placedOnBoard()) {
+                    store[count] = hand[i];
+                    count++;
+                    if (hold[hand[i].boardX()][hand[i].boardY()] == 0) {// placement spot is open
+                        hold[hand[i].boardX()][hand[i].boardY()] = hand[i].getLetter().charAt(0);
+                    } else { // tile is over another tile, can't do that
+                        System.out.println("A tile is over another tile, can't do that");
                         return false;
                     }
                 }
-                    // go to the end of the word since it has been checked
-                    j = j + z - 1;
-                }
             }
-        }
-        // down \/
-        for (int i = 0; i < hold.length; i++) {
-            for (int j = 0; j < hold[i].length; j++) {
-                char[] collect = new char[15];
-                int z = 0;
-                if (hold[j][i] != 0) {
-                    collect[z] = hold[j][i];
-                    z++;
-                    while (hold[j+z][i] != 0 && j + z < hold.length) {
-                        collect[z] = hold[j + z][i];
+            // ->
+            for (int i = 0; i < hold.length; i++) {
+                for (int j = 0; j < hold[i].length; j++) {
+                    char[] collect = new char[15];
+                    int z = 0;
+                    if (hold[i][j] != 0) {
+                        collect[z] = hold[i][j];
                         z++;
+                        while (j + z < hold.length && hold[i][j + z] != 0 ) {
+                            collect[z] = hold[i][j + z];
+                            z++;
+                        }
+                        int p = 1;
+                        while(j - p >= 0 && hold[i][j - p] != 0 ){
+                            for(int k = 1; k < z; k++){
+                               collect[z+k] = collect[z+k -1];
+                            }
+                            collect[0] = hold[i][j - p];
+                            p++;
+                            
+                        }
+                        if (z > 1 || boardEmpty(board)) {
+                            String word = "";
+                            for (int k = 0; k < z; k++) {
+                                word = word + collect[k];
+                            }
+                            if (this.dict.validWord(word) == false) { // the word isnt a word
+                                return false;
+                            }
+                        }
+                        // go to the end of the word since it has been checked
+                        j = j + z - 1;
                     }
-                    if(z>1){
-                    String word = "";
-                    for (int k = 0; k < z; k++) {
-                        word = word + collect[k];
-                    }
-                    if (this.dict.validWord(word) == false) { // the word isnt a word
-                        System.out.println("Down fail");
-                        return false;
-                    }
-                }
-                    // go to the end of the word since it has been checked
-                    j = j + z - 1;
                 }
             }
+            // down \/
+            for (int i = 0; i < hold.length; i++) {
+                for (int j = 0; j < hold[i].length; j++) {
+                    char[] collect = new char[15];
+                    int z = 0;
+                    if (hold[j][i] != 0) {
+                        collect[z] = hold[j][i];
+                        z++;
+                        while (j + z < hold.length && hold[j + z][i] != 0 ) {
+                            collect[z] = hold[j + z][i];
+                            z++;
+                        }
+                        int p = 1;
+                        while (j - p >= 0 && hold[j- p][i ] != 0  ){
+                            for(int k = 1; k < z; k++){
+                               collect[z+k] = collect[z+k -1];
+                            }
+                            collect[0] = hold[j- p][i];
+                            p++;
+                            
+                        }
+                        if (z > 1 || boardEmpty(board)) {
+                            String word = "";
+                            for (int k = 0; k < z; k++) {
+                                word = word + collect[k];
+                            }
+                            if (this.dict.validWord(word) == false) { // the word isnt a word
+                                System.out.println("Down fail");
+                                return false;
+                            }
+                        }
+                        // go to the end of the word since it has been checked
+                        j = j + z - 1;
+                    }
+                }
+            }
+            // everything is a word
+        } else {
+            // wasn't touching or wasn't all in a line
+            System.out.println("touchingAndSameRow");
+            return false;
         }
-        // everything is a word
         return true;
 
     }
@@ -222,7 +325,7 @@ public class Player {
             hand[i].setHandX(150 + 30 * i + 5 * i - 15);
             hand[i].setHandY(this.returnToHandY);
             hand[i].changingCords(hand[i].getHandY(), hand[i].getHandX(), false);
-            hand[i].falseFakePlaced();
+           // hand[i].falseFakePlaced();
 
         }
     }

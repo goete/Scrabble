@@ -96,12 +96,11 @@ public class BagOfTiles {
         return output;
     }
 
-    // public Tile exchange(){}
-    public static void main(final String[] array) {
+    /* public static void main(final String[] array) {
         BagOfTiles test = new BagOfTiles();
         test.shuffle();
         test.toString();
         System.out.println(test);
 
-    }
+    } */
 }

@@ -217,6 +217,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         }
     }
 
+    
     @Override
     public void paintComponent(final Graphics graphics) {
         graphics.clearRect(0, 0, this.getWidth(), this.getHeight());
@@ -350,7 +351,9 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
     }
 
     public void mouseMoved(final MouseEvent mouseEvent) {
-
+       /*  final int n = (int) mouseEvent.getPoint().getX();
+        final int n2 = (int) mouseEvent.getPoint().getY();
+        System.out.println("X " + n + " Y " + n2); */
     }
 
     public void keyTyped(KeyEvent ke) {
@@ -374,7 +377,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
             user1.switchTurn();
             user2.switchTurn();
         }else {
-        System.out.println("word isn't valid");
+        System.out.println("Play isn't valid");
      
     }
 }
