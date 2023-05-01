@@ -254,6 +254,7 @@ public class Player {
                 }
             }
             // everything is a word
+            scoringSystem(hold);
         } else {
             // wasn't touching or wasn't all in a line
             System.out.println("touchingAndSameRow");
@@ -261,6 +262,10 @@ public class Player {
         }
         return true;
 
+    }
+
+    private void scoringSystem(char[][] board){
+       
     }
 
     public Tile[] placedTiles() {
