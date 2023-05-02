@@ -222,7 +222,21 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         graphics.fillRect(275, 10, 205, 30);
         graphics.setColor(BLACK);
         graphics.setFont(new Font("MonoLisa", Font.PLAIN, 27));
+        if(currentPlayer() == user1){
+            graphics.setColor(BLUE);
+            graphics.setFont(new Font("MonoLisa", Font.PLAIN, 28));
+        }else{
+            graphics.setColor(BLACK);
+            graphics.setFont(new Font("MonoLisa", Font.PLAIN, 27));
+        }
         graphics.drawString("Player One: " + user1.getScore(), 33, 35);
+        if(currentPlayer() == user2){
+            graphics.setColor(BLUE);
+            graphics.setFont(new Font("MonoLisa", Font.PLAIN, 28));
+        }else{
+            graphics.setColor(BLACK);
+            graphics.setFont(new Font("MonoLisa", Font.PLAIN, 27));
+        }
         graphics.drawString("Player Two: " + user2.getScore(), 278, 35);
 
     }
