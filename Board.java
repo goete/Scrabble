@@ -33,7 +33,6 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
     public static final Color BLUE;
     public static final Color CYAN;
     public static final Color GREEN;
-    public static final Color PINK;
     public static final Color BLACK;
     public static final Color WHITE;
     public static final Color RED;
@@ -361,9 +360,6 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
     }
 
     public void mouseMoved(final MouseEvent mouseEvent) {
-       /*  final int n = (int) mouseEvent.getPoint().getX();
-        final int n2 = (int) mouseEvent.getPoint().getY();
-        System.out.println("X " + n + " Y " + n2); */
     }
 
     public void keyTyped(KeyEvent ke) {
@@ -418,7 +414,6 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         BLUE = Color.BLUE;
         CYAN = Color.CYAN;
         GREEN = Color.GREEN;
-        PINK = Color.PINK;
         BLACK = Color.BLACK;
         WHITE = Color.WHITE;
         RED = Color.RED;
