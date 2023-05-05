@@ -344,6 +344,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
                 // mouse on board
                 if (n >= 30 && n <= 30 + 30 * 15 && n2 >= 50 && n2 <= 50 + 30 * 15) {
                     currentPlayer().getHand()[i].changingCords(n2, n, true);
+                    System.out.println(currentPlayer().getHand()[i].specialSquare());
                 } else {// not on board
                     currentPlayer().getHand()[i].changingCords(n2 - 15, n - 15, false);
                 }
