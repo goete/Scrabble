@@ -31,7 +31,6 @@ public class Dict {
 
     public boolean validWord(String w) {
         w = w.toUpperCase();
-        System.out.println(w);
         for (int j = 0; j < dictionary.length; j++) {
         if (w.equals(dictionary[j])) { 
             return true;
@@ -40,10 +39,6 @@ public class Dict {
          return false;
     }
 
-      /* public static void main(String[] args) {
-        Dict d = new Dict();
-        String test = "C";
-        System.out.println(d.validWord(test)); 
-    }   */
+      
 
 }

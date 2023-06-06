@@ -98,6 +98,8 @@ public class Tile implements Comparable<Tile> {
                 return 3;
             } else if (i == 6 || i == 8) {// double letters
                 return 1;
+            } else if (i== 7){
+                return 2;
             } else {// double words
                 return 2;
             }
