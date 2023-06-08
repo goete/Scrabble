@@ -48,6 +48,7 @@ public class Player {
             hand[i].setHandX(150 + 30 * i + 5 * i - 15);
             hand[i].setHandY(this.returnToHandY);
             hand[i].changingCords(hand[i].getHandY(), hand[i].getHandX(), false);
+            hand[i].blankReturning();
             returnToHandX = hand[i].getCol();
             // hand[i].falseFakePlaced();
         }

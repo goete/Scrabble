@@ -26,10 +26,10 @@ public class Tile implements Comparable<Tile> {
         this.handY = 0;
         this.fakePlaced = false;
         // checking if it is the blank or not
-        if (this.letter == "?") {
-            isBlank = true;
+        if (this.letter.equals("?")) {
+            this.isBlank = true;
         } else {
-            isBlank = false;
+            this.isBlank = false;
         }
     }
 
@@ -154,7 +154,7 @@ public class Tile implements Comparable<Tile> {
     }
 
     public boolean isBlank() {
-        return isBlank;
+        return this.isBlank;
     }
 
     public boolean currentlyClicked() {
@@ -180,7 +180,7 @@ public class Tile implements Comparable<Tile> {
 
     public void blankLetterMaking(String letter) {
         if (isBlank) {
-            this.letter = letter;
+            this.letter = letter.toUpperCase();
         }
     }
 

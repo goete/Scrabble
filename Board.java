@@ -48,6 +48,8 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
     private Player user2;
     private Tile[][] onBoard;
     private int numOnBoard;
+    private boolean waitingForLetter;
+    private int VALUE;
 
     public Board(final int rows, final int columns, Player user1, Player user2) {
         JFrame frame = new JFrame();
@@ -55,8 +57,10 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         this.message = "";
         this.user1 = user1;
         this.user2 = user2;
+        this.waitingForLetter = false;
         this.numLines = 0;
         this.line = new int[4][100];
+        this.VALUE = 30;
         this.columns = columns;
         this.setPreferredSize(new Dimension(60 + 30 * columns, 100 + 30 * (this.rows = rows) + 80));
         frame.setTitle("Board game");
@@ -206,7 +210,11 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
                     graphics.setColor(TILE_COLOR);
                     graphics.fillRect(t.getRow(), t.getCol(), 30, 30);
                     graphics.setColor(BLACK);
+                    if(t.isBlank()){
+                        graphics.setColor(RED);
+                    }
                     graphics.drawString(t.getLetter(), t.getRow() + adjust, t.getCol() + 24);
+                    graphics.setColor(BLACK);
                     graphics.setFont(new Font("MonoLisa", Font.PLAIN, 10));
                     if (!t.getLetter().equals("?")) {
                         graphics.drawString(Integer.toString(t.getValue()), t.getRow(), t.getCol() + 29);
@@ -356,15 +364,22 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
     public void mouseReleased(final MouseEvent mouseEvent) {
         final int n = (int) mouseEvent.getPoint().getX();
         final int n2 = (int) mouseEvent.getPoint().getY();
-        for (int i = 0; i < currentPlayer().TilesInHand(); i++) { // issue here
+        for (int i = 0; i < currentPlayer().TilesInHand(); i++) { 
             if (currentPlayer().getHand()[i].currentlyClicked()) {
                 if (currentPlayer().getHand()[i].getCol() < 50 || currentPlayer().getHand()[i].getCol() > 50 + 30 * 15
                         || currentPlayer().getHand()[i].getRow() < 30
                         || currentPlayer().getHand()[i].getRow() > 30 + 30 * 15) {
                     currentPlayer().getHand()[i].changingCords(currentPlayer().getHand()[i].getHandY(),
                             currentPlayer().getHand()[i].getHandX(), false);
+                            currentPlayer().getHand()[i].blankReturning();
                 } else {
                     currentPlayer().getHand()[i].changingCords(n2, n, true);
+                    if(currentPlayer().getHand()[i].isBlank()){
+                        this.waitingForLetter = true;
+                        System.out.println("here");
+                        VALUE = i;
+                        System.out.println("Click a letter to set the blank");
+                    }
                 }
             }
             currentPlayer().getHand()[i].clickedOff();
@@ -375,8 +390,16 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
 
     public void mouseMoved(final MouseEvent mouseEvent) {
     }
-
+    @Override
     public void keyTyped(KeyEvent ke) {
+        int clicked = ke.getKeyChar();
+        if(clicked >= 97 && clicked <= 122 && waitingForLetter || clicked >= 65 && clicked <= 90 && waitingForLetter){
+            String key = String.valueOf(ke.getKeyChar());
+            currentPlayer().getHand()[VALUE].blankLetterMaking(key);
+            waitingForLetter = false;
+        }else if(waitingForLetter){
+            System.out.println("That is not acceptable, please try again");
+        }
     }
 
     @Override
@@ -385,7 +408,6 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         if(clicked == KeyEvent.VK_ENTER){
         //checks if word is valid 
         if(currentPlayer().wordValid(onBoard)){
-            
             int keep = currentPlayer().onBoardNumber();
             Tile[] hold = new Tile[keep];
             hold = currentPlayer().placedTiles();
@@ -398,7 +420,6 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
             user2.switchTurn();
         }else {
         System.out.println("Play isn't valid");
-     
     }
 }
     repaint();
