@@ -80,11 +80,13 @@ public class BagOfTiles {
         return t;
     }
 
-    public void PuttingBackInBag(int numOfTilesExchanged) {
-        // THIS NEEDS TO BE FINISHED
-
+   public void exchangeAllOfThese(Tile[] balls){
+    for (int i = 0; i < balls.length; i++) {
+        this.tiles[numOfTiles] = balls[i];
+        numOfTiles++;
     }
-
+    this.shuffle();
+   }
     // toString
     public String toString() {
         String output = "";
@@ -96,11 +98,4 @@ public class BagOfTiles {
         return output;
     }
 
-    /* public static void main(final String[] array) {
-        BagOfTiles test = new BagOfTiles();
-        test.shuffle();
-        test.toString();
-        System.out.println(test);
-
-    } */
 }

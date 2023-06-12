@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 //
 public class Tile implements Comparable<Tile> {
     private int row, col, handX, handY;
-    private boolean inBag, placedOnBoard, isBlank, currentlyClicked, fakePlaced;
+    private boolean inBag, placedOnBoard, isBlank, currentlyClicked, waitingForEx;
     private int value;
     private String letter;
 
@@ -18,13 +18,13 @@ public class Tile implements Comparable<Tile> {
         this.row = placedRow;
         this.col = placedCol;
         this.inBag = true;
+        this.waitingForEx = false;
         this.placedOnBoard = false;
         this.value = value;
         this.letter = letter;
         this.currentlyClicked = false;
         this.handX = 0;
         this.handY = 0;
-        this.fakePlaced = false;
         // checking if it is the blank or not
         if (this.letter.equals("?")) {
             this.isBlank = true;
@@ -188,6 +188,14 @@ public class Tile implements Comparable<Tile> {
         if (isBlank) {
             this.letter = "?";
         }
+    }
+
+    public boolean amILeavingButJustWaiting(){
+        return waitingForEx;
+    }
+
+    public void switchWaitingForEx(){
+        waitingForEx = !waitingForEx;
     }
 
     @Override

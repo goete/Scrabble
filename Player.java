@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class Player {
     private Tile[] hand;
     private int numOfTilesInHand;
-    private boolean isTurn, wordValid, bingoHasBeenCounted;
+    private boolean isTurn, wordValid, bingoHasBeenCounted, clickTimeForExchanges;
     private static Color TILE_COLOR;
     private static Color BLACK;
     private int returnToHandY;
@@ -24,6 +24,7 @@ public class Player {
 
     // constructor
     public Player(BagOfTiles bag, Dict dict) {
+        this.clickTimeForExchanges = false;
         this.dict = dict;
         this.bag = bag;
         this.score = 0;
@@ -42,6 +43,9 @@ public class Player {
 
     }
 
+    public BagOfTiles getBagged(){
+        return bag;
+    }
     public void alphabetizeAndPutInHand() {
         Arrays.sort(hand);
         for (int i = 0; i < numOfTilesInHand; i++) {
@@ -360,7 +364,7 @@ public class Player {
     }
 
     private void scoringASingleWordThatHasBeenFound(Tile[] collect, Tile[] hold){
-        
+    
     u = 0;
     int holdScore = 0;
     boolean doubleWord = false;
@@ -476,11 +480,52 @@ public class Player {
         return store;
     }
 
+    public boolean areWeExchangingButInLimbo(){
+        return clickTimeForExchanges;
+    }
+
+    public void switchExchange(){
+        clickTimeForExchanges = !clickTimeForExchanges;
+    }
+
+    private int exchangeNumber(){
+        int balloon = 0;
+        for (int i = 0; i < hand.length; i++) {
+            if(hand[i].amILeavingButJustWaiting()){
+                balloon++;
+            }
+        }
+        return balloon;
+    }
+
+    private Tile[] giveMeToTheBalls(){
+        Tile[] holding = new Tile[exchangeNumber()];
+        int num = 0;
+        for (int i = 0; i < hand.length; i++) {
+            if(hand[i].amILeavingButJustWaiting()){
+                holding[num] = hand[i];
+                num++;
+            }
+        }
+        return holding;
+    }
+
     public void replaceHand() {
+        if(this.clickTimeForExchanges){
+            for (int i = 0; i < hand.length; i++) {
+                if(this.hand[i].amILeavingButJustWaiting()){
+                    this.hand[i].switchWaitingForEx();
+                    this.hand[i] = this.bag.PickUpTile();
+                }
+            }
+        }
         for (int i = 0; i < this.numOfTilesInHand; i++) {
-            if (this.hand[i].placedOnBoard()) {
+            if(bag.remainingTiles() > 0){
+                if (this.hand[i].placedOnBoard()) {
                 this.hand[i] = this.bag.PickUpTile();
             }
+            }
+            
         }
         this.alphabetizeAndPutInHand();
     }
@@ -582,5 +627,12 @@ public class Player {
             }
 
         }
+    }
+
+    public void exchange() {
+        Tile[] hold = giveMeToTheBalls();
+        replaceHand();
+        bag.exchangeAllOfThese(hold);
+        this.clickTimeForExchanges = false;
     }
 }

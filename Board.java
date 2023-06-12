@@ -161,6 +161,12 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         graphics.drawString("⇄", 95, 547);
     }
 
+    private void paintExchangeButton(final Graphics graphics) {
+        graphics.setColor(BLACK);
+        graphics.setFont(new Font("TimesRoman", Font.PLAIN, 18));
+        graphics.drawString("EX", 450, 547);
+    }
+
     private void paintSkipTurnButton(final Graphics graphics) {
         graphics.setColor(WHITE);
         graphics.fillOval(33, 530, 20, 20);
@@ -210,7 +216,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
                     graphics.setColor(TILE_COLOR);
                     graphics.fillRect(t.getRow(), t.getCol(), 30, 30);
                     graphics.setColor(BLACK);
-                    if(t.isBlank()){
+                    if (t.isBlank()) {
                         graphics.setColor(RED);
                     }
                     graphics.drawString(t.getLetter(), t.getRow() + adjust, t.getCol() + 24);
@@ -224,30 +230,31 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         }
     }
 
-    private void printScores(final Graphics graphics){
+    private void printScores(final Graphics graphics) {
         graphics.setColor(GRID_COLOR_E);
         graphics.fillRect(30, 10, 205, 30);
         graphics.fillRect(275, 10, 205, 30);
         graphics.setColor(BLACK);
         graphics.setFont(new Font("MonoLisa", Font.PLAIN, 27));
-        if(currentPlayer() == user1){
+        if (currentPlayer() == user1) {
             graphics.setColor(BLUE);
             graphics.setFont(new Font("MonoLisa", Font.PLAIN, 28));
-        }else{
+        } else {
             graphics.setColor(BLACK);
             graphics.setFont(new Font("MonoLisa", Font.PLAIN, 27));
         }
         graphics.drawString("Player One: " + user1.getScore(), 33, 35);
-        if(currentPlayer() == user2){
+        if (currentPlayer() == user2) {
             graphics.setColor(BLUE);
             graphics.setFont(new Font("MonoLisa", Font.PLAIN, 28));
-        }else{
+        } else {
             graphics.setColor(BLACK);
             graphics.setFont(new Font("MonoLisa", Font.PLAIN, 27));
         }
         graphics.drawString("Player Two: " + user2.getScore(), 278, 35);
 
     }
+
     @Override
     public void paintComponent(final Graphics graphics) {
         graphics.clearRect(0, 0, this.getWidth(), this.getHeight());
@@ -259,6 +266,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         this.paintRecallButton(graphics);
         this.paintShuffleHandButton(graphics);
         this.paintSkipTurnButton(graphics);
+        this.paintExchangeButton(graphics);
 
     }
 
@@ -311,6 +319,16 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
             user1.switchTurn();
             user2.switchTurn();
         }
+        if (n2 >= 530 && n2 <= 550 && n >= 450 && n <= 490) { // exchange
+            if(currentPlayer().getBagged().exchangeValid()){
+                currentPlayer().alphabetizeAndPutInHand();
+                currentPlayer().switchExchange();
+                System.out.println("Switched exchange");
+            }else{
+                System.out.println("Not enough Tiles left to exchange");
+            }
+            
+        }
         this.repaint();
     }
 
@@ -336,7 +354,17 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
             if (n >= currentPlayer().getHand()[i].getRow() && n <= currentPlayer().getHand()[i].getRow() + 30
                     && n2 >= currentPlayer().getHand()[i].getCol()
                     && n2 <= currentPlayer().getHand()[i].getCol() + 30) {
-                currentPlayer().getHand()[i].clickedOn();
+                if (currentPlayer().areWeExchangingButInLimbo()) {
+                    if (!currentPlayer().getHand()[i].amILeavingButJustWaiting()) {
+                        currentPlayer().getHand()[i].changingX(currentPlayer().getHand()[i].getCol() - 15);
+                        currentPlayer().getHand()[i].switchWaitingForEx();
+                    } else {
+                        currentPlayer().getHand()[i].changingX(currentPlayer().getHand()[i].getCol());
+                        currentPlayer().getHand()[i].switchWaitingForEx();
+                    }
+                } else {
+                    currentPlayer().getHand()[i].clickedOn();
+                }
 
             }
         }
@@ -364,17 +392,17 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
     public void mouseReleased(final MouseEvent mouseEvent) {
         final int n = (int) mouseEvent.getPoint().getX();
         final int n2 = (int) mouseEvent.getPoint().getY();
-        for (int i = 0; i < currentPlayer().TilesInHand(); i++) { 
+        for (int i = 0; i < currentPlayer().TilesInHand(); i++) {
             if (currentPlayer().getHand()[i].currentlyClicked()) {
                 if (currentPlayer().getHand()[i].getCol() < 50 || currentPlayer().getHand()[i].getCol() > 50 + 30 * 15
                         || currentPlayer().getHand()[i].getRow() < 30
                         || currentPlayer().getHand()[i].getRow() > 30 + 30 * 15) {
                     currentPlayer().getHand()[i].changingCords(currentPlayer().getHand()[i].getHandY(),
                             currentPlayer().getHand()[i].getHandX(), false);
-                            currentPlayer().getHand()[i].blankReturning();
+                    currentPlayer().getHand()[i].blankReturning();
                 } else {
                     currentPlayer().getHand()[i].changingCords(n2, n, true);
-                    if(currentPlayer().getHand()[i].isBlank()){
+                    if (currentPlayer().getHand()[i].isBlank()) {
                         this.waitingForLetter = true;
                         System.out.println("here");
                         VALUE = i;
@@ -390,14 +418,15 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
 
     public void mouseMoved(final MouseEvent mouseEvent) {
     }
+
     @Override
     public void keyTyped(KeyEvent ke) {
         int clicked = ke.getKeyChar();
-        if(clicked >= 97 && clicked <= 122 && waitingForLetter || clicked >= 65 && clicked <= 90 && waitingForLetter){
+        if (clicked >= 97 && clicked <= 122 && waitingForLetter || clicked >= 65 && clicked <= 90 && waitingForLetter) {
             String key = String.valueOf(ke.getKeyChar());
             currentPlayer().getHand()[VALUE].blankLetterMaking(key);
             waitingForLetter = false;
-        }else if(waitingForLetter){
+        } else if (waitingForLetter) {
             System.out.println("That is not acceptable, please try again");
         }
     }
@@ -405,24 +434,31 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
     @Override
     public void keyPressed(KeyEvent ke) {
         int clicked = ke.getKeyCode();
-        if(clicked == KeyEvent.VK_ENTER){
-        //checks if word is valid 
-        if(currentPlayer().wordValid(onBoard)){
-            int keep = currentPlayer().onBoardNumber();
-            Tile[] hold = new Tile[keep];
-            hold = currentPlayer().placedTiles();
-            for(int i = 0; i < keep; i++){
-                onBoard[hold[i].boardX()][hold[i].boardY()] = hold[i];
-                numOnBoard++;
+        if (clicked == KeyEvent.VK_ENTER) {
+            if (currentPlayer().areWeExchangingButInLimbo()) {
+                currentPlayer().exchange();
+                user1.switchTurn();
+                user2.switchTurn();
+            } else {
+
+                // checks if word is valid
+                if (currentPlayer().wordValid(onBoard)) {
+                    int keep = currentPlayer().onBoardNumber();
+                    Tile[] hold = new Tile[keep];
+                    hold = currentPlayer().placedTiles();
+                    for (int i = 0; i < keep; i++) {
+                        onBoard[hold[i].boardX()][hold[i].boardY()] = hold[i];
+                        numOnBoard++;
+                    }
+                    currentPlayer().replaceHand();
+                    user1.switchTurn();
+                    user2.switchTurn();
+                } else {
+                    System.out.println("Play isn't valid");
+                }
             }
-            currentPlayer().replaceHand();
-            user1.switchTurn();
-            user2.switchTurn();
-        }else {
-        System.out.println("Play isn't valid");
-    }
-}
-    repaint();
+        }
+        repaint();
     }
 
     public void keyReleased(KeyEvent ke) {
