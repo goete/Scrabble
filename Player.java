@@ -299,7 +299,6 @@ public class Player {
             p++;
             z++;
     }
-    System.out.println("I AM VERTICAL");
     scoringASingleWordThatHasBeenFound(collect, hold);
     
     }
@@ -319,7 +318,6 @@ public class Player {
             p++;
             z++;
     }
-    System.out.println("I AM SIDEWAYS");
     
     scoringASingleWordThatHasBeenFound(collect, hold);
     }
@@ -339,7 +337,6 @@ public class Player {
             p++;
             z++;
     }
-    System.out.println("I AM SIDEWAYS");
     
     scoringASingleWordThatHasBeenFound(collect, hold);
     }
@@ -359,7 +356,6 @@ public class Player {
             p++;
             z++;
     }
-    System.out.println("I AM VERTICAL");
     scoringASingleWordThatHasBeenFound(collect, hold);
     }
 
@@ -429,7 +425,6 @@ public class Player {
         holdScore = holdScore*3;
     }      
     this.score += holdScore;
-    System.out.println(holdScore);
     }
 
     private void scoringSystem(Tile[][] board3) {
@@ -512,6 +507,7 @@ public class Player {
 
     public void replaceHand() {
         if(this.clickTimeForExchanges){
+            this.bag.shuffle();
             for (int i = 0; i < hand.length; i++) {
                 if(this.hand[i].amILeavingButJustWaiting()){
                     this.hand[i].switchWaitingForEx();
@@ -558,6 +554,7 @@ public class Player {
 
     public void shuffleHand() {
         for (int i = 0; i < this.numOfTilesInHand; i++) {
+            hand[i].blankReturning();
             // generate random number
             int min = i;
             int max = this.numOfTilesInHand - 1;
@@ -571,7 +568,6 @@ public class Player {
             hand[i].setHandX(150 + 30 * i + 5 * i - 15);
             hand[i].setHandY(this.returnToHandY);
             hand[i].changingCords(hand[i].getHandY(), hand[i].getHandX(), false);
-            // hand[i].falseFakePlaced();
 
         }
     }

@@ -320,14 +320,14 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
             user2.switchTurn();
         }
         if (n2 >= 530 && n2 <= 550 && n >= 450 && n <= 490) { // exchange
-            if(currentPlayer().getBagged().exchangeValid()){
+            if (currentPlayer().getBagged().exchangeValid()) {
                 currentPlayer().alphabetizeAndPutInHand();
                 currentPlayer().switchExchange();
                 System.out.println("Switched exchange");
-            }else{
+            } else {
                 System.out.println("Not enough Tiles left to exchange");
             }
-            
+
         }
         this.repaint();
     }
@@ -491,6 +491,17 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener,
         ORANGE = Color.ORANGE;
         LIGHTBLUE = new Color(173, 216, 230);
 
+    }
+
+    public void gameOver() {
+        if (user1.getScore() == user2.getScore()) {
+            System.out.println("Tie Game");
+        } else if (user1.getScore() > user2.getScore()) {
+            System.out.println("Player one wins");
+        } else {
+            System.out.println("Player two wins");
+
+        }
     }
 
 }
