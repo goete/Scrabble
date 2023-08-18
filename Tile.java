@@ -1,13 +1,3 @@
-import javafx.scene.paint.Color;
-
-//check if blank
-//  be able to customize which letter it is
-//check in bag
-//check value
-//check what square it is on
-//  check if that square has a modifier
-//check if placed
-//
 public class Tile implements Comparable<Tile> {
     private int row, col, handX, handY;
     private boolean inBag, placedOnBoard, isBlank, currentlyClicked, waitingForEx;
